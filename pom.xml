@@ -73,6 +73,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <outputDirectory>${project.build.directory}/original</outputDirectory>
                             <artifactSet>
                                 <includes>
                                     <include>org.clojure:clojure</include>
