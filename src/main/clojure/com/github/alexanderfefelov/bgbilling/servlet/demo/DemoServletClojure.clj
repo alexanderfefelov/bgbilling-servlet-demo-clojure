@@ -19,78 +19,54 @@
 
 (def ^:private logger (Logger/getLogger "DemoServletClojure"))
 
-(defn -init [this config]
-  (try
+(defmacro wrap [block]
+  `(try
     (NestedContext/push logContext)
-    (.. logger (trace "init"))
-    (finally
-      (NestedContext/pop))))
+    (~@block)
+    (catch Exception e# (.. logger (error e#)))
+    (finally (NestedContext/pop))))
+
+(defn -init [this config]
+  (wrap(.. logger (trace "init"))))
 
 (defn -destroy [this]
-  (try
-    (NestedContext/push logContext)
-    (.. logger (trace "destroy"))
-    (finally
-      (NestedContext/pop))))
+  (wrap(.. logger (trace "destroy"))))
 
 (defn -doGet [this request response]
-  (try
-    (NestedContext/push logContext)
+  (wrap(
     (.. logger (trace "doGet"))
     (def kernelVer (VersionInfo/getVersionInfo "server"))
     (def message (format "Hello, World!\n%s %s"
       (.. kernelVer getModuleName)
       (.. kernelVer getVersionString)))
-    (.. response
-        getWriter
-          (println message))
-    (finally
-      (NestedContext/pop))))
+    (.. response getWriter (println message)))))
 
 (defn -doPost [this request response]
-  (try
-    (NestedContext/push logContext)
+  (wrap(
     (.. logger (trace "doPost"))
-    (.parentDoPost this request response)
-    (finally
-      (NestedContext/pop))))
+    (.parentDoPost this request response))))
 
 (defn -doPut [this request response]
-  (try
-    (NestedContext/push logContext)
+  (wrap(
     (.. logger (trace "doPut"))
-    (.parentDoPut this request response)
-    (finally
-      (NestedContext/pop))))
+    (.parentDoPut this request response))))
 
 (defn -doDelete [this request response]
-  (try
-    (NestedContext/push logContext)
+  (wrap(
     (.. logger (trace "doDelete"))
-    (.parentDoDelete this request response)
-    (finally
-      (NestedContext/pop))))
+    (.parentDoDelete this request response))))
 
 (defn -doHead [this request response]
-  (try
-    (NestedContext/push logContext)
+  (wrap(
     (.. logger (trace "doHead"))
-    (.parentDoHead this request response)
-    (finally
-      (NestedContext/pop))))
+    (.parentDoHead this request response))))
 
 (defn -doOptions [this request response]
-  (try
-    (NestedContext/push logContext)
+  (wrap(
     (.. logger (trace "doOptions"))
-    (.parentDoOptions this request response)
-    (finally
-      (NestedContext/pop))))
+    (.parentDoOptions this request response))))
 
 (defn -doTrace [this request response]
-  (try
-    (NestedContext/push logContext)
+  (wrap(
     (.. logger (trace "doTrace"))
-    (.parentDoTrace this request response)
-    (finally
-      (NestedContext/pop))))
+    (.parentDoTrace this request response))))
