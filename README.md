@@ -22,43 +22,87 @@ mvn package
 
 Скопируйте jar-файл, созданный в результате в каталоге `target`, в каталог `lib/custom` вашего экземпляра BGBilling.
 
+## Привет, мир!
+
+- [HelloWorldClojure.clj](src/main/clojure/com/github/alexanderfefelov/bgbilling/servlet/demo/HelloWorldClojure.clj)
+- [TerryPratchettFilterClojure.clj](src/main/clojure/com/github/alexanderfefelov/bgbilling/servlet/demo/TerryPratchettFilterClojure.clj)
+
 В конфигурацию BGBilling добавьте:
 
-```
-custom.servlet.keys=DemoServletClojure
-#                   │                │
-#                   └─────┬──────────┘
-#                         │
-#                   Ключ сервлета                                 Класс сервлета
-#                         │                                              │
-#              ┌──────────┴─────┐       ┌────────────────────────────────┴──────────────────────────────────┐
-#              │                │       │                                                                   │
-custom.servlet.DemoServletClojure.class=com.github.alexanderfefelov.bgbilling.servlet.demo.DemoServletClojure
-custom.servlet.DemoServletClojure.mapping=/demo-servlet-clojure
-#                                         │                   │
-#                                         └─────────┬─────────┘
+```properties
+# Servlet: Привет, мир!
+#
+custom.servlet.keys=HelloWorldClojure
+#                   │               │
+#                   └────┬──────────┘
+#                        │
+#                  Ключ сервлета                                 Класс сервлета
+#                        │                                              │
+#              ┌─────────┴─────┐       ┌────────────────────────────────┴─────────────────────────────────┐
+#              │               │       │                                                                  │
+custom.servlet.HelloWorldClojure.class=com.github.alexanderfefelov.bgbilling.servlet.demo.HelloWorldClojure
+custom.servlet.HelloWorldClojure.mapping=/demo-servlet/hello-world-clojure
+#                                        │                               │
+#                                        └───────────────┬───────────────┘
+#                                                        │
+#                                            Часть URL после контекста
+#
+custom.servlet.HelloWorldClojure.filter.keys=TerryPratchettClojure
+#                                            │                   │
+#                                            └──────┬────────────┘
 #                                                   │
-#                                       Часть URL после контекста
+#                                              Ключ фильтра
+#                                                   │
+#                                       ┌───────────┴───────┐
+#                                       │                   │
+custom.servlet.HelloWorldClojure.filter.TerryPratchettClojure.name=TerryPratchettClojure
+custom.servlet.HelloWorldClojure.filter.TerryPratchettClojure.class=com.github.alexanderfefelov.bgbilling.servlet.demo.TerryPratchettFilterClojure
+#                                                                   │                                                                            │
+#                                                                   └──────────────────────────────────┬─────────────────────────────────────────┘
+#                                                                                                      │
+#                                                                                                Класс фильтра
 ```
 
 Перезапустите BGBilling.
 
-Для проверки выполните:
+Если всё в порядке, в логах можно будет увидеть:
 
 ```
-curl --request GET --include http://YOUR.BGBILLING.HOST:8080/bgbilling/demo-servlet-clojure
+01-14/22:09:18  INFO [main] Server - Add custom servlet from setup...
+01-14/22:09:18  INFO [main] Server - Custom.servlet.keys => HelloWorldClojure
+01-14/22:09:18  INFO [main] Server - Custom.servlet.class => com.github.alexanderfefelov.bgbilling.servlet.demo.HelloWorldClojure
+01-14/22:09:18  INFO [main] Server - Custom.servlet.mapping => /demo-servlet/hello-world-clojure
+01-14/22:09:21  INFO [main] Server - Add mapping: com.github.alexanderfefelov.bgbilling.servlet.demo.HelloWorldClojure to /demo-servlet/hello-world-clojure
+01-14/22:09:21  INFO [main] Server - Add mapping: com.github.alexanderfefelov.bgbilling.servlet.demo.TerryPratchettFilterClojure to /demo-servlet/hello-world-clojure
 ```
 
-В ответ вы получите что-то вроде такого:
+Теперь выполните:
+
+```
+http --verbose --check-status \
+  GET http://bgbilling-server.backpack.test:63081/billing/demo-servlet/hello-world-clojure
+```
+
+В результате на запрос:
+
+```
+GET /billing/demo-servlet/hello-world-clojure HTTP/1.1
+Accept: */*
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Host: bgbilling-server.backpack.test:63081
+User-Agent: HTTPie/1.0.3
+```
+
+будет получен ответ:
 
 ```
 HTTP/1.1 200 OK
-Content-Length: 52
-Date: Thu, 28 Mar 2019 08:56:34 GMT
-Connection: close
+Content-Length: 14
+Date: Thu, 14 Jan 2021 19:19:27 GMT
+X-Clacks-Overhead: GNU Terry Pratchett
 
 Hello, World!
-kernel 7.1.1112 / 15.03.2019 16:43:56
 ```
 
 ## Логи
@@ -97,9 +141,19 @@ kernel 7.1.1112 / 15.03.2019 16:43:56
 </appender>
 ```
 
+В результате после перезапуска BGBilling в файле log/servlet.log можно будет увидеть что-то вроде:
+
+```
+01-14/22:19:26 TRACE [localhost.localdomain-startStop-1] TerryPratchettFilterClojure - init
+01-14/22:19:27 TRACE [http-nio-0.0.0.0-8080-exec-1] HelloWorldClojure - init
+01-14/22:19:27 TRACE [http-nio-0.0.0.0-8080-exec-1] TerryPratchettFilterClojure - doFilter
+01-14/22:19:27 TRACE [http-nio-0.0.0.0-8080-exec-1] HelloWorldClojure - doGet
+```
+
 ## Что дальше?
 
 * Ознакомьтесь с [описанием технологии Servlet](https://docs.oracle.com/javaee/7/tutorial/servlets.htm).
+* Изучите [список фильтров, встроенных в Tomcat 8.5](https://tomcat.apache.org/tomcat-8.5-doc/config/filter.html).
 * Посмотрите аналогичные проекты на других языках:
   * Java - https://github.com/alexanderfefelov/bgbilling-servlet-demo,
   * Kotlin - https://github.com/alexanderfefelov/bgbilling-servlet-demo-kotlin,
