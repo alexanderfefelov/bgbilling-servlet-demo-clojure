@@ -141,7 +141,7 @@ Hello, World!
 </appender>
 ```
 
-В результате после перезапуска BGBilling в файле log/servlet.log можно будет увидеть что-то вроде:
+В результате после перезапуска BGBilling в файле `log/servlet.log` можно будет увидеть что-то вроде:
 
 ```
 01-14/22:19:26 TRACE [localhost.localdomain-startStop-1] TerryPratchettFilterClojure - init
