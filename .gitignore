@@ -1,5 +1,7 @@
 .classpath
+.clj-kondo
 .idea
+.lsp
 .project
 .settings
 .vscode
