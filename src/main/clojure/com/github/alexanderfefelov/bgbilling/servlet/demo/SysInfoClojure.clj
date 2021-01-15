@@ -1,6 +1,9 @@
 (ns com.github.alexanderfefelov.bgbilling.servlet.demo.SysInfoClojure
   (:import
+    bitel.billing.common.VersionInfo
+    java.net.InetAddress
     org.apache.log4j.Logger
+    ru.bitel.bgbilling.kernel.module.server.ModuleCache
     ru.bitel.common.logging.NestedContext)
   (:gen-class
     :extends javax.servlet.http.HttpServlet
@@ -18,23 +21,37 @@
 (def logger (Logger/getLogger "SysInfoClojure"))
 
 (def HR "--------------------------------------------------")
+(def NL "\n")
+(def MB (* 1024 1024))
+
+(defn inspectKernel []
+  (def versionInfo (VersionInfo/getVersionInfo "server"))
+  (str "0 " (.. versionInfo getModuleName) " " (.. versionInfo getVersionString)))
+
+(defn inspectModule [module]
+  (def versionInfo (VersionInfo/getVersionInfo (.. module getName)))
+  (str (.. module getId) " " (.. versionInfo getModuleName) " " (.. versionInfo getVersionString)))
 
 (defn collectModules []
-  "foo"
-  )
+  (def modules (.. ModuleCache getInstance getModulesList))
+  (str
+    (inspectKernel) NL
+    (clojure.string/join NL (map (fn [module] (inspectModule module)) modules))))
 
 (defn collectRuntime []
-  "bar"
-  )
+  (str
+    "Hostname/IP address: " (.. InetAddress getLocalHost toString) NL
+    "Available processors: " (.. Runtime getRuntime availableProcessors) NL
+    "Memory free / max / total, MB: "
+      (quot (.. Runtime getRuntime freeMemory) MB) " / "
+      (quot (.. Runtime getRuntime maxMemory) MB) " / "
+      (quot (.. Runtime getRuntime totalMemory) MB)))
 
 (defn collectSysInfo []
-  (format
-    "Modules\n%s\n\n%s\n\nRuntime\n%s\n\n%s"
-    HR
-    (collectModules)
-    HR
-    (collectRuntime))
-  )
+  (str
+    "Modules" NL HR NL NL  (collectModules) NL
+    NL
+    "Runtime" NL HR NL NL  (collectRuntime)))
 
 (defmacro wrap [block] `
   (try

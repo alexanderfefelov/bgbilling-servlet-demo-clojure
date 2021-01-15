@@ -199,6 +199,31 @@ User-Agent: HTTPie/1.0.3
 вы получите:
 
 ```
+HTTP/1.1 200 OK
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Origin: http://example.com
+Content-Length: 488
+Date: Fri, 15 Jan 2021 11:18:33 GMT
+Vary: Origin
+X-BGBilling-Server-Uptime: Started: 15.01.2021 14:08:05 Uptime: 0 d 00:10:28
+X-Clacks-Overhead: GNU Terry Pratchett
+
+Modules
+--------------------------------------------------
+
+0 kernel 8.0.1320 / 16.12.2020 18:10:08
+2 inet 8.0.832 / 15.12.2020 17:06:32
+1 card 8.0.307 / 06.10.2020 01:52:21
+3 npay 8.0.287 / 19.11.2020 18:41:17
+5 subscription 8.0.128 / 06.10.2020 01:52:39
+4 rscm 8.0.272 / 06.10.2020 01:52:36
+
+Runtime
+--------------------------------------------------
+
+Hostname/IP address: bgbilling-server.backpack.test/172.17.0.8
+Available processors: 8
+Memory free / max / total, MB: 277 / 451 / 451
 ```
 
 ## Логи
