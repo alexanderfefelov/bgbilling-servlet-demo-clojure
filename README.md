@@ -3,7 +3,7 @@
 
 ## Что это?
 
-bgbilling-servlet-demo-clojure - это Clojure-версия демонстрационной реализации сервлетов и фильтров для использования совместно с сервером [BGBilling](https://bgbilling.ru/). 
+bgbilling-servlet-demo-clojure - это Clojure-версия демонстрационной реализации сервлетов и фильтров для использования совместно с сервером [BGBilling](https://bgbilling.ru/).
 
 ## Требования
 
