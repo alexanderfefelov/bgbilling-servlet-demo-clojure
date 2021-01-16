@@ -49,9 +49,9 @@
 
 (defn collectSysInfo []
   (str
-    "Modules" NL HR NL NL  (collectModules) NL
+    "Modules" NL HR NL NL (collectModules) NL
     NL
-    "Runtime" NL HR NL NL  (collectRuntime)))
+    "Runtime" NL HR NL NL (collectRuntime)))
 
 (defmacro wrap [block] `
   (try
