@@ -1,0 +1,15 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "02:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: org.clojure:clojure
+    versions:
+    - 1.10.2
+  - dependency-name: org.apache.tomcat.embed:tomcat-embed-core
+    versions:
+    - 10.0.0
